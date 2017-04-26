@@ -34,7 +34,6 @@ namespace AdaptiveTaskbar
 
         private static void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
-            MessageBox.Show("SystemEvents_DisplaySettingsChanged");
             try
             {
                 bool small = IsTaskbarSmall(); // Can throw exceptions, abort in that case
