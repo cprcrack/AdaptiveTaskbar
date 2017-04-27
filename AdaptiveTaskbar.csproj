@@ -97,4 +97,11 @@
     <Content Include="icon64.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+        <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo"/>
+    </GetAssemblyIdentity>
+    <Exec Command="nuget pack AdaptiveTaskbar.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
+    <Exec Command="squirrel --releasify $(OutDir)AdaptiveTaskbar.%(myAssemblyInfo.Version).nupkg" />
+    </Target>
 </Project>

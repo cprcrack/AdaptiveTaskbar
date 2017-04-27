@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>AdaptiveTaskbar</id>
+    <!-- version will be replaced by MSBuild -->
+    <version>0.0.0</version>
+    <title>Adaptive Taskbar</title>
+    <authors>Cristian Perez</authors>
+    <iconUrl>https://raw.githubusercontent.com/cprcrack/AdaptiveTaskbar/master/icon64.ico</iconUrl>
+    <description>Adaptive Taskbar automatically switches between big or small Windows taskbar depending on the current screen size.</description>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>Copyright © 2017 Cristian Perez</copyright>
+    <dependencies />
+  </metadata>
+  <files>
+    <file src="*.*" target="lib\net45\" exclude="*.pdb;*.nupkg;*.vshost.*"/>
+  </files>
+</package>
