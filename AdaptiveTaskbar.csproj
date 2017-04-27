@@ -101,7 +101,7 @@
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
         <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo"/>
     </GetAssemblyIdentity>
-    <Exec Command="nuget pack AdaptiveTaskbar.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
-    <Exec Command="squirrel --releasify $(OutDir)AdaptiveTaskbar.%(myAssemblyInfo.Version).nupkg" />
+    <Exec Command="nuget pack AdaptiveTaskbar.nuspec -Version $([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
+    <Exec Command="squirrel --releasify $(OutDir)AdaptiveTaskbar.$([System.Version]::Parse(%(myAssemblyInfo.Version)).ToString(3)).nupkg" />
     </Target>
 </Project>
