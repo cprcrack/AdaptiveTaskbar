@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Configuration;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -11,7 +12,7 @@ namespace AdaptiveTaskbar
         // SendNotifyMessage function: https://msdn.microsoft.com/es-es/library/windows/desktop/ms644953(v=vs.85).aspx
         // Windows data types: https://msdn.microsoft.com/en-us/library/windows/desktop/aa383751(v=vs.85).aspx
 
-        private const int BIG_ICONS_RES = 1920;
+        private static int BIG_TASKBAR_RES = 1920; // Also set in App.config, where it can be modified by the user
 
         private const int NULL = 0;
         private const int HWND_BROADCAST = 0xffff;
@@ -25,6 +26,15 @@ namespace AdaptiveTaskbar
 
         private static void Main(string[] args)
         {
+            // Read custom BIG_TASKBAR_RES setting from App.config
+            try
+            {
+                BIG_TASKBAR_RES = Int32.Parse(ConfigurationManager.AppSettings["BIG_TASKBAR_RES"]);
+            }
+            catch (Exception)
+            {
+            }
+
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged; // We are never detaching the event handler
             SystemEvents_DisplaySettingsChanged(null, null);
             //ToggleTaskbarSize(); // For testing
@@ -41,11 +51,11 @@ namespace AdaptiveTaskbar
                 // This resolution takes into account Windows' DPI setting, so even if a small 13 inch screen's native resolution is 1920,
                 // if the DPI setting is set for example to 150% (which is a common thing), it returns 1280
 
-                if (screenWidth < BIG_ICONS_RES && !small) // Update taskbar size to small if necessary
+                if (screenWidth < BIG_TASKBAR_RES && !small) // Update taskbar size to small if necessary
                 {
                     UpdateTaskbarSize(true);
                 }
-                else if (screenWidth >= BIG_ICONS_RES && small) // Update taskbar size to big if necessary
+                else if (screenWidth >= BIG_TASKBAR_RES && small) // Update taskbar size to big if necessary
                 {
                     UpdateTaskbarSize(false);
                 }
