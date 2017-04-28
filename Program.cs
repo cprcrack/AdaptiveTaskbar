@@ -37,6 +37,7 @@ namespace AdaptiveTaskbar
         {
 #if DEBUG
             //SetStartup(true); // For testing
+            //UpdateApp(); // For testing
 #else
             // Customize Squirrel update events (this also prevents shortcuts from being created as happens in the default implementation)
             using (var updateManager = new UpdateManager(""))
@@ -94,10 +95,11 @@ namespace AdaptiveTaskbar
                     await updateManager.Result.UpdateApp();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // The GitHub update process is untested. At the time of testing exceptions are thrown,
-                // maybe because there are no Releases setup on GitHub?
+                // MessageBox.Show(ex.ToString());
+                // The GitHub update process is untested. At the time of testing an exception is thrown,
+                // maybe because there are no Releases setup on GitHub? Verify later.
             }
         }
 
