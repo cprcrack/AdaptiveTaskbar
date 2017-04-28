@@ -1,4 +1,4 @@
-# Adaptive Taskbar for Windows™
+# Adaptive Taskbar for Windows™ ![Adaptive Taskbar for Windows icon](https://raw.githubusercontent.com/cprcrack/AdaptiveTaskbar/master/icon64.ico)
 
 Adaptive Taskbar is a lightweight app that automatically switches between big or small Windows taskbar depending on the current *main* screen size.
 
