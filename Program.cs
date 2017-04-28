@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Squirrel;
 using System;
 using System.Configuration;
 using System.Runtime.InteropServices;
@@ -21,11 +22,35 @@ namespace AdaptiveTaskbar
         [DllImport("User32.dll")]
         static extern bool SendNotifyMessage(IntPtr hWnd, uint Msg, UIntPtr wParam, string lParam);
 
-        private const string REG_KEY_NAME = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
-        private const string REG_VALUE_NAME = "TaskbarSmallIcons";
+        private const string REG_KEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
+        private const string REG_NAME = "TaskbarSmallIcons";
+
+        private const string REG_STARTUP_KEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+        private const string REG_STARTUP_NAME = "AdaptiveTaskbar";
+
+        private const string GITHUB_UPDATE_URL = @"https://github.com/cprcrack/AdaptiveTaskbar";
+
+        private const string ON_FIRST_RUN_TITLE = "Installation successful";
+        private const string ON_FIRST_RUN_DESCRIPTION = "Adaptive Taskbar has been correctly installed in the background. It will automatically switch between big or small Windows taskbar depending on the current screen size. You can always uninstall it via \"Programs and features\".";
 
         private static void Main(string[] args)
         {
+#if DEBUG
+            //SetStartup(true); // For testing
+#else
+            // Customize Squirrel update events (this also prevents shortcuts from being created as happens in the default implementation)
+            using (var updateManager = new UpdateManager(""))
+            {
+                SquirrelAwareApp.HandleEvents(
+                  onInitialInstall: v => SetStartup(false),
+                  onAppUpdate: v => SetStartup(false),
+                  onAppUninstall: v => SetStartup(true),
+                  onFirstRun: () => MessageBox.Show(ON_FIRST_RUN_DESCRIPTION, ON_FIRST_RUN_TITLE));
+            }
+
+            UpdateApp();
+#endif
+
             // Read custom BIG_TASKBAR_RES setting from App.config
             try
             {
@@ -42,67 +67,102 @@ namespace AdaptiveTaskbar
             Application.Run(); // Blocking. This prevents the application from closing.
         }
 
-        private static void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        private static void SetStartup(bool remove)
+        {
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(REG_STARTUP_KEY, true);
+            if (key != null)
+            {
+                if (remove)
+                {
+                    key.DeleteValue(REG_STARTUP_NAME, false);
+                }
+                else
+                {
+                    key.SetValue(REG_STARTUP_NAME, Application.ExecutablePath);
+                    // This already takes care of overwritting old version paths with the new one, as they will have the same REG_STARTUP_NAME
+                }
+            }
+        }
+
+        // Check for updates in the background
+        private async static void UpdateApp()
         {
             try
             {
-                bool small = IsTaskbarSmall(); // Can throw exceptions, abort in that case
-                int screenWidth = Screen.PrimaryScreen.Bounds.Width;
-                // This resolution takes into account Windows' DPI setting, so even if a small 13 inch screen's native resolution is 1920,
-                // if the DPI setting is set for example to 150% (which is a common thing), it returns 1280
-
-                if (screenWidth < BIG_TASKBAR_RES && !small) // Update taskbar size to small if necessary
+                using (var updateManager = UpdateManager.GitHubUpdateManager(GITHUB_UPDATE_URL))
                 {
-                    UpdateTaskbarSize(true);
-                }
-                else if (screenWidth >= BIG_TASKBAR_RES && small) // Update taskbar size to big if necessary
-                {
-                    UpdateTaskbarSize(false);
+                    await updateManager.Result.UpdateApp();
                 }
             }
             catch (Exception)
             {
+                // The GitHub update process is untested. At the time of testing exceptions are thrown,
+                // maybe because there are no Releases setup on GitHub?
+            }
+        }
+
+        private static void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        {
+            bool small = IsTaskbarSmall(); // Can throw exceptions, abort in that case
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            // This resolution takes into account Windows' DPI setting, so even if a small 13 inch screen's native resolution is 1920,
+            // if the DPI setting is set for example to 150% (which is a common thing), it returns 1280
+
+            if (screenWidth < BIG_TASKBAR_RES && !small) // Update taskbar size to small if necessary
+            {
+                UpdateTaskbarSize(true);
+            }
+            else if (screenWidth >= BIG_TASKBAR_RES && small) // Update taskbar size to big if necessary
+            {
+                UpdateTaskbarSize(false);
             }
         }
 
         private static void ToggleTaskbarSize()
         {
-            try
-            {
-                bool small = IsTaskbarSmall();
-                UpdateTaskbarSize(!small);
-            }
-            catch (Exception)
-            {
-            }
+            bool small = IsTaskbarSmall();
+            UpdateTaskbarSize(!small);
         }
 
-        private static bool IsTaskbarSmall() // Can throw exceptions, do not attemp to updateTaskbarSize() in that case
+        private static bool IsTaskbarSmall()
         {
             try
             {
-                object regValue = Registry.GetValue(REG_KEY_NAME, REG_VALUE_NAME, 0);
-                if (regValue != null && regValue.GetType() == typeof(int))
+                object value = null;
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(REG_KEY, true))
                 {
-                    return (int)regValue != 0;
+                    if (key != null)
+                    {
+                        value = key.GetValue(REG_NAME, 0);
+                    }
+                }
+                if (value != null && value.GetType() == typeof(int))
+                {
+                    return (int)value != 0;
                 }
                 else
                 {
-                    throw new Exception("Registry key not found or unexpected value type");
+                    return false;
                 }
             }
             catch (Exception)
             {
-                throw;
+                return false;
             }
         }
 
-        private static void UpdateTaskbarSize(bool small) // Does not throw exceptions
+        private static void UpdateTaskbarSize(bool small)
         {
             try
             {
-                Registry.SetValue(REG_KEY_NAME, REG_VALUE_NAME, small ? 1 : 0);
-                SendNotifyMessage((IntPtr)HWND_BROADCAST, WM_SETTINGCHANGE, (UIntPtr)NULL, "TraySettings");
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(REG_KEY, true))
+                {
+                    if (key != null)
+                    {
+                        key.SetValue(REG_NAME, small ? 1 : 0);
+                        SendNotifyMessage((IntPtr)HWND_BROADCAST, WM_SETTINGCHANGE, (UIntPtr)NULL, "TraySettings");
+                    }
+                }
             }
             catch (Exception)
             {
