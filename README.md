@@ -32,7 +32,7 @@ As Adaptive Taskbar doesn't have any user interface, the only way to uninstall t
 
 ## License and contributing
 
-Adaptive Taskbar is free and open source. The source code is released under The GNU General Public License v3.0. Contributions are very welcome. Be sure to star this project on GitHub, [report bugs or suggest new ideas](https://github.com/cprcrack/AdaptiveTaskbar/issues/new).
+Adaptive Taskbar is free and open source. The source code is released under the MIT License. Contributions are very welcome. Be sure to star this project on GitHub, [report bugs or suggest new ideas](https://github.com/cprcrack/AdaptiveTaskbar/issues/new).
 
 ## Legal
 
