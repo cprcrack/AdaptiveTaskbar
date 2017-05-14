@@ -6,7 +6,7 @@ This is useful, for example, when you have a lot of pinned icons in the taskbar 
 
 ## Compatibility
 
-Adaptive Taskbar has been developed and tested for Windows 10, but it should be compatible with Windows 7/8/10.
+Adaptive Taskbar has been developed and tested for Windows 10 (including Creators Update), but it should be compatible with Windows 7/8/10.
 
 ## Downloading and installing
 
@@ -20,7 +20,7 @@ If you want, you can test that Adaptive Taskbar is working by changing your *mai
 
 ## Customizing the thresold
 
-You can choose the resolution thresold for the screen to be considered big by editing the `AdaptiveTaskbar.exe.config` file located in `C:\YOUR_USER\Cristian\AppData\Local\AdaptiveTaskbar\app-LAST_APP_VERSION\` after installation.
+You can choose the resolution thresold for the screen to be considered big by editing the `AdaptiveTaskbar.exe.config` file located in `C:\YOUR_USER\AppData\Local\AdaptiveTaskbar\app-LAST_APP_VERSION\` after installation.
 
 You will have to open the file with a text editor and modify the default value, 1920, to something else. The value represents the minimum horizontal resolution of the screen for it to be considered big.
 
@@ -28,7 +28,7 @@ Note that this resolution already takes into account Windows' DPI setting, so ev
 
 ## Uninstalling
 
-As Adaptive Taskbar doesn't have any user interface, the only way to uninstall the app is via the "Programs and features" window from the Control Panel.
+As Adaptive Taskbar doesn't have any user interface, the only way to uninstall the app is via the "Apps and features" window from the Control Panel.
 
 ## License and contributing
 
