@@ -1,12 +1,24 @@
-# Adaptive Taskbar for Windows™ ![Adaptive Taskbar for Windows icon](https://raw.githubusercontent.com/cprcrack/AdaptiveTaskbar/master/icon64.ico)
+# Adaptive Taskbar for Windows™ <img align="left" src="https://raw.githubusercontent.com/cprcrack/AdaptiveTaskbar/master/icon64.ico"> 
 
-Adaptive Taskbar is a lightweight app that automatically switches between big or small Windows taskbar depending on the current *main* screen size.
+Adaptive Taskbar is a lightweight desktop app that automatically switches between the big or small Windows taskbar depending on the current *main* screen size.
 
-This is useful, for example, when you have a lot of pinned icons in the taskbar that fit in a big screen (i.e. your external screen) but do not fit in your small screen (i.e. your laptop's built-in screen) unless you set Windows' taskbar size to be small. In this case Adaptive Taskbar will automatically change this setting when you connect or disconnect your external screen, so you don't have to.
+This is how a regular taskbar looks like in a big monitor:
+
+![](https://raw.githubusercontent.com/cprcrack/AdaptiveTaskbar/master/Resources/taskbar_big.png)
+
+However when you switch to a smaller monitor (like when disconnecting the external screen of your laptop), if there is not enough room for all your pinned icons, the following ugly behavior will happen by default:
+
+![](https://raw.githubusercontent.com/cprcrack/AdaptiveTaskbar/master/Resources/taskbar_small_without.png)
+
+With Adaptive Taskbar installed, your taskbar will automatically be switched to the small variant so that you can get rid of the ugly two line scrollable taskbar and see this instead:
+
+![](https://raw.githubusercontent.com/cprcrack/AdaptiveTaskbar/master/Resources/taskbar_small_with.png)
+
+Adaptive Taskbar works on the background by automatically changing Windows' taskbar size setting when you connect or disconnect your external screen, so you don't have to.
 
 ## Compatibility
 
-Adaptive Taskbar has been developed and tested for Windows 10 (including Creators Update), but it should be compatible with Windows 7/8/10.
+Adaptive Taskbar has been developed and tested for Windows 10, but it should be compatible with Windows 7/8/10.
 
 ## Downloading and installing
 
@@ -16,11 +28,11 @@ A dialog box will confirm the successful installation, and from that point the a
 
 ## Testing
 
-If you want, you can test that Adaptive Taskbar is working by changing your *main* screen resolution to be smaller or equal-or-bigger than the thresold (by default 1920), assuming your Windows' DPI setting is set to 100%.
+If you want, you can test that Adaptive Taskbar is working by changing your *main* screen resolution to be smaller or equal-or-bigger than the threshold (by default 1920), assuming your Windows' DPI setting is set to 100%.
 
-## Customizing the thresold
+## Customizing the threshold
 
-You can choose the resolution thresold for the screen to be considered big by editing the `AdaptiveTaskbar.exe.config` file located in `C:\YOUR_USER\AppData\Local\AdaptiveTaskbar\app-LAST_APP_VERSION\` after installation.
+You can choose the resolution threshold for the screen to be considered big by editing the `AdaptiveTaskbar.exe.config` file located in `C:\YOUR_USER\AppData\Local\AdaptiveTaskbar\app-LAST_APP_VERSION\` after installation.
 
 You will have to open the file with a text editor and modify the default value, 1920, to something else. The value represents the minimum horizontal resolution of the screen for it to be considered big.
 
